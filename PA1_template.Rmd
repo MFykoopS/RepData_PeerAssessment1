@@ -5,18 +5,44 @@ output:
     keep_md: true
 ---
 
-
 ## Loading and preprocessing the data
+Loading the data from the zip file.
+```{r loaddata}
+file <- unz("activity.zip", "activity.csv")
+activity <- read.csv(file)
+```
 
-
+What does it look like?
+```{r str}
+str(activity)
+```
 
 ## What is mean total number of steps taken per day?
+```{r histogram}
+stepsperday <- tapply(activity$steps, activity$date, sum, na.rm = T)
+hist(stepsperday, main = "Histogram of steps taken each day",
+     xlab = "Total number of steps per day")
+```
 
-
+Mean and median of steps for each day
+```{r meanmedian}
+mean(stepsperday)
+median(stepsperday)
+```
 
 ## What is the average daily activity pattern?
+```{r timeseries}
+intervalmeans <- tapply(activity$steps, activity$interval, sum, na.rm = T)
+plot(unique(activity$interval), intervalmeans, type = "l",
+     xlab = "Time (5-minute intervals)", ylab = "Average number of steps taken",
+     main = "Average daily activity pattern")
+```
 
-
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
+maxsteps <- sort(intervalmeans, decreasing = T)[1]
+```
+8:35 with `r maxsteps[[1]]` steps.
 
 ## Imputing missing values
 
